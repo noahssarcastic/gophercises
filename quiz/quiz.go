@@ -23,32 +23,46 @@ func parseArgs() string {
 	return *path
 }
 
-func readCSV(path string) [][]string {
+func readCSV(path string) []problem {
 	f, err := os.Open(path)
 	check(err)
 	csv := csv.NewReader(f)
 	records, err := csv.ReadAll()
 	check(err)
 
-	return records
+	problems := make([]problem, len(records))
+	for i, row := range records {
+		problems[i] = problem{
+			question: row[0],
+			answer:   row[1],
+		}
+	}
+	return problems
+}
+
+type problem struct {
+	question string
+	answer   string
 }
 
 func main() {
 	path := parseArgs()
-	records := readCSV(path)
+	problems := readCSV(path)
 
 	numCorrect := 0
-	for i, row := range records {
-		question := row[0]
-		answer := row[1]
-
-		fmt.Printf("Question #%d: %s\n", i+1, question)
+	for i, row := range problems {
+		fmt.Printf("Question #%d: %s\n", i+1, row.question)
 
 		var submission string
-		_, err := fmt.Scanln(&submission)
-		check(err)
+		_, err := fmt.Scanf("%s\n", &submission)
+		if err != nil && err.Error() == "unexpected newline" {
+			fmt.Println("Skipped!")
+			continue
+		} else {
+			check(err)
+		}
 
-		if submission == answer {
+		if submission == row.answer {
 			fmt.Println("Correct!")
 			numCorrect++
 		} else {
@@ -56,5 +70,5 @@ func main() {
 		}
 	}
 
-	fmt.Printf("Finished! You got %d/%d correct!\n", numCorrect, len(records))
+	fmt.Printf("Finished! You got %d/%d correct!\n", numCorrect, len(problems))
 }
