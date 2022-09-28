@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 func check(err error) {
@@ -70,16 +71,16 @@ func askProblem(p problem, n int, correct chan int) {
 }
 
 func runQuiz(problems []problem) int {
-	correct := make(chan int)
-	quit := make(chan bool)
+	timer := time.NewTimer(30 * time.Second)
 
+	correct := make(chan int)
 	numCorrect := 0
 	for i, row := range problems {
 		go askProblem(row, i, correct)
 		select {
 		case msg := <-correct:
 			numCorrect += msg
-		case <-quit:
+		case <-timer.C:
 			return numCorrect
 		}
 	}
@@ -89,6 +90,7 @@ func runQuiz(problems []problem) int {
 func main() {
 	path := parseArgs()
 	problems := readCSV(path)
+
 	numCorrect := runQuiz(problems)
 	fmt.Printf("Finished! You got %d/%d correct!\n", numCorrect, len(problems))
 }
