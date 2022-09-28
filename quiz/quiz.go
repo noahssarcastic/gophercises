@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -38,7 +39,7 @@ func readCSV(path string) []problem {
 	for i, row := range records {
 		problems[i] = problem{
 			question: row[0],
-			answer:   row[1],
+			answer:   cleanString(row[1]),
 		}
 	}
 	return problems
@@ -47,6 +48,12 @@ func readCSV(path string) []problem {
 type problem struct {
 	question string
 	answer   string
+}
+
+func cleanString(s string) string {
+	trimmed := strings.TrimSpace(s)
+	lower := strings.ToLower(trimmed)
+	return lower
 }
 
 func askProblem(p problem, n int, correct chan int) {
@@ -62,7 +69,9 @@ func askProblem(p problem, n int, correct chan int) {
 		check(err)
 	}
 
-	if submission == p.answer {
+	cleaned := cleanString(submission)
+
+	if cleaned == p.answer {
 		fmt.Println("Correct!")
 		correct <- 1
 		return
