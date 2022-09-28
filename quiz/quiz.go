@@ -15,13 +15,16 @@ func check(err error) {
 	}
 }
 
-func parseArgs() string {
+func parseArgs() (string, int) {
 	cwd, err := os.Getwd()
 	check(err)
 	defaultFile := filepath.Join(cwd, "problems.csv")
+
 	path := flag.String("file", defaultFile, "Path to CSV containing quiz problems.")
+	timeLimit := flag.Int("time", 30, "Time limit for the quiz.")
+
 	flag.Parse()
-	return *path
+	return *path, *timeLimit
 }
 
 func readCSV(path string) []problem {
@@ -70,8 +73,8 @@ func askProblem(p problem, n int, correct chan int) {
 	}
 }
 
-func runQuiz(problems []problem) int {
-	timer := time.NewTimer(30 * time.Second)
+func runQuiz(problems []problem, timeLimit int) int {
+	timer := time.NewTimer(time.Duration(timeLimit) * time.Second)
 
 	correct := make(chan int)
 	numCorrect := 0
@@ -88,9 +91,12 @@ func runQuiz(problems []problem) int {
 }
 
 func main() {
-	path := parseArgs()
+	path, timeLimit := parseArgs()
 	problems := readCSV(path)
 
-	numCorrect := runQuiz(problems)
+	fmt.Print("Press [ENTER] to start!")
+	fmt.Scanln()
+	numCorrect := runQuiz(problems, timeLimit)
+
 	fmt.Printf("Finished! You got %d/%d correct!\n", numCorrect, len(problems))
 }

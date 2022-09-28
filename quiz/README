@@ -30,11 +30,11 @@ eg.
 
 # Part 2
 
-- [ ] Add a timer
-- [ ] Time limit should default to 30 seconds
-- [ ] Customize time limit via a flag
-- [ ] Quiz should stop as soon as the time limit has exceeded
-- [ ] Prompt user to press enter before the timer starts
+- [*] Add a timer
+- [*] Time limit should default to 30 seconds
+- [*] Customize time limit via a flag
+- [*] Quiz should stop as soon as the time limit has exceeded
+- [*] Prompt user to press enter before the timer starts
 
 # Bonus
 
