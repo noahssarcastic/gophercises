@@ -45,30 +45,50 @@ type problem struct {
 	answer   string
 }
 
-func main() {
-	path := parseArgs()
-	problems := readCSV(path)
+func askProblem(p problem, n int, correct chan int) {
+	fmt.Printf("Question #%d: %s\n", n+1, p.question)
+
+	var submission string
+	_, err := fmt.Scanf("%s\n", &submission)
+	if err != nil && err.Error() == "unexpected newline" {
+		fmt.Println("Skipped!")
+		correct <- 0
+		return
+	} else {
+		check(err)
+	}
+
+	if submission == p.answer {
+		fmt.Println("Correct!")
+		correct <- 1
+		return
+	} else {
+		fmt.Println("Wrong!")
+		correct <- 0
+		return
+	}
+}
+
+func runQuiz(problems []problem) int {
+	correct := make(chan int)
+	quit := make(chan bool)
 
 	numCorrect := 0
 	for i, row := range problems {
-		fmt.Printf("Question #%d: %s\n", i+1, row.question)
-
-		var submission string
-		_, err := fmt.Scanf("%s\n", &submission)
-		if err != nil && err.Error() == "unexpected newline" {
-			fmt.Println("Skipped!")
-			continue
-		} else {
-			check(err)
-		}
-
-		if submission == row.answer {
-			fmt.Println("Correct!")
-			numCorrect++
-		} else {
-			fmt.Println("Wrong!")
+		go askProblem(row, i, correct)
+		select {
+		case msg := <-correct:
+			numCorrect += msg
+		case <-quit:
+			return numCorrect
 		}
 	}
+	return numCorrect
+}
 
+func main() {
+	path := parseArgs()
+	problems := readCSV(path)
+	numCorrect := runQuiz(problems)
 	fmt.Printf("Finished! You got %d/%d correct!\n", numCorrect, len(problems))
 }
