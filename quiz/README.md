@@ -1,10 +1,10 @@
 # Part 1
 
-- [*] Read in a quiz provided via a CSV file 
-- [*] Keep track of how many questions answered correctly
-- [*] The CSV file should default to problems.csv
-- [*] Specify CSV file with a flag
-- [*] Output the total number of questions correct and how many questions there were in total
+- [x] Read in a quiz provided via a CSV file 
+- [x] Keep track of how many questions answered correctly
+- [x] The CSV file should default to problems.csv
+- [x] Specify CSV file with a flag
+- [x] Output the total number of questions correct and how many questions there were in total
 
 ## Problem Format
 
@@ -30,13 +30,13 @@ eg.
 
 # Part 2
 
-- [*] Add a timer
-- [*] Time limit should default to 30 seconds
-- [*] Customize time limit via a flag
-- [*] Quiz should stop as soon as the time limit has exceeded
-- [*] Prompt user to press enter before the timer starts
+- [x] Add a timer
+- [x] Time limit should default to 30 seconds
+- [x] Customize time limit via a flag
+- [x] Quiz should stop as soon as the time limit has exceeded
+- [x] Prompt user to press enter before the timer starts
 
 # Bonus
 
-- [*] Add string trimming and cleanup so extra whitespace & capitalization are ignored
+- [x] Add string trimming and cleanup so extra whitespace & capitalization are ignored
 - [ ] Add an option to shuffle the quiz order
