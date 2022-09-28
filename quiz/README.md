@@ -39,4 +39,4 @@ eg.
 # Bonus
 
 - [x] Add string trimming and cleanup so extra whitespace & capitalization are ignored
-- [ ] Add an option to shuffle the quiz order
+- [x] Add an option to shuffle the quiz order

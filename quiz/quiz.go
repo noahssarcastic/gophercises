@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,16 +17,24 @@ func check(err error) {
 	}
 }
 
-func parseArgs() (string, int) {
+func parseArgs() (string, int, bool) {
 	cwd, err := os.Getwd()
 	check(err)
 	defaultFile := filepath.Join(cwd, "problems.csv")
 
 	path := flag.String("file", defaultFile, "Path to CSV containing quiz problems.")
 	timeLimit := flag.Int("time", 30, "Time limit for the quiz.")
+	random := flag.Bool("random", false, "Should the quiz problems be given in a random order.")
 
 	flag.Parse()
-	return *path, *timeLimit
+	return *path, *timeLimit, *random
+}
+
+func randomize(problems []problem) {
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(problems), func(i, j int) {
+		problems[i], problems[j] = problems[j], problems[i]
+	})
 }
 
 func readCSV(path string) []problem {
@@ -100,8 +109,12 @@ func runQuiz(problems []problem, timeLimit int) int {
 }
 
 func main() {
-	path, timeLimit := parseArgs()
+	path, timeLimit, random := parseArgs()
 	problems := readCSV(path)
+
+	if random {
+		randomize(problems)
+	}
 
 	fmt.Print("Press [ENTER] to start!")
 	fmt.Scanln()
