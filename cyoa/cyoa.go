@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 )
@@ -29,14 +30,29 @@ type AdventureHandler struct {
 }
 
 func (h AdventureHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-	if path == "/" {
-		arc := h.Story["intro"]
-		fmt.Fprintln(w, arc)
-	} else {
-		arc := h.Story[path[1:]]
-		fmt.Fprintln(w, arc)
+	defaultArcKey := "intro"
+	arcKey := defaultArcKey
+	if path := r.URL.Path; path != "/" {
+		arcKey = r.URL.Path[1:]
 	}
+
+	if arc, ok := h.Story[arcKey]; ok {
+		displayArc(w, arc)
+	} else {
+		panic("Arc not found!")
+	}
+
+}
+
+func displayArc(w http.ResponseWriter, arc StoryArc) {
+	createTemplate(w, arc)
+}
+
+func createTemplate(w http.ResponseWriter, arc StoryArc) {
+	tmpl, err := template.New("arc.html").ParseFiles("arc.html")
+	check(err)
+	err = tmpl.Execute(w, arc)
+	check(err)
 }
 
 func main() {

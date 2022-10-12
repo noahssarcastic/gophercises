@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}}</title>
+</head>
+
+<body>
+    <h1>{{.Title}}</h1>
+    <section>
+        <header>Story</header>
+        {{range .Story}}<p>{{.}}</p>{{else}}<p>404. Story not found.</p>{{end}}
+    </section>
+
+    <section>
+        <header>Options</header>
+        <ul>
+            {{range .Options}}<li><a href="{{.Arc}}">{{.Text}}</a></li>{{end}}
+        </ul>
+    </section>
+</body>
+
+</html>
